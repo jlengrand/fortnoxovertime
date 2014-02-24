@@ -1,5 +1,8 @@
-var weeklyHours = 40;
+var weeklyHours = 40; // Number of hours to be worked per week
 
+/* 
+* Checks whether our browser supports LocalStorage
+*/
 function supports_html5_storage() {
   try {
     return 'localStorage' in window && window['localStorage'] !== null;
@@ -8,6 +11,10 @@ function supports_html5_storage() {
   }
 }
 
+/*
+* The method that is run instead of deliver. 
+* Contains all the statistics calculation
+*/
 function saveStatistics(){
 
     var workingTime = calculateWorkingTime();
@@ -17,20 +24,27 @@ function saveStatistics(){
 
     // Need to store the information somewhere now. Using localStorage
     saveWorkingTime(workingTime);
+    saveWeekOvertime(overtime);
     
     
     var current = localStorage["OverTime"];
-    localStorage["OverTime"] = current + overtime;
+    localStorage["overTime"] = current + overtime;
     
     //Giving original behaviour back
     SaveWeekRows(true);
 }
 
+/*
+* Calculate the amount of hours worked this week
+*/
 function calculateWorkingTime(){
     var hours = parseInt(document.getElementById("info_hour_sum").innerHTML);
     return hours;
 }
 
+/*
+* Calculates the number of extra hours I worked this week
+*/
 function calculateOvertime(workingTime){
     var weeklyOvertime = workingTime - weeklyHours;
     
@@ -42,16 +56,46 @@ function calculateOvertime(workingTime){
     }
 }
 
+/*
+* Saves the total time worked for a given week 
+* The key used is the fortnox code for this week  :
+* year + weeknumber + month : 1409-02 for 9th week of 2014 in february + over
+*/
 function saveWorkingTime(workingTime){
-  //Saves the total time worked for a given week 
-  // The key used is the fortnox code for this week  :
-  // year + weeknumber + month : 1409-02 for 9th week of 2014 in february
-  
-  var weekKey = document.getElementById("time_week").value;
+
+  var weekKey = getWeekKey();
   localStorage[weekKey] = workingTime;
 }
 
-//Happens no matter what 
+/*
+* Saves the overtime for a given week
+* The key used is the fortnox code for this week  :
+* year + weeknumber + month : 1409-02 for 9th week of 2014 in february
+*/
+function saveWeekOvertime(overtime){
+
+  var weekOvertimeKey = getWeekOvertimeKey();
+  localStorage[weekOvertimeKey] = overtime;
+}
+
+/*
+* creates a hash key for the weekly working time
+*/
+function getWeekKey(){
+  return document.getElementById("time_week").value;
+}
+
+/*
+* creates a hash key for the weekly overtime
+*/
+function getWeekOvertimeKey(){
+  return getWeekKey() + "_overtime";
+}
+
+
+/*
+Happens no matter what 
+*/
 var ok = supports_html5_storage();
 if(ok){
     console.log("Local Storage allowed!");
