@@ -25,10 +25,7 @@ function saveStatistics(){
     // Need to store the information somewhere now. Using localStorage
     saveWorkingTime(workingTime);
     saveWeekOvertime(overtime);
-    
-    
-    var current = localStorage["OverTime"];
-    localStorage["overTime"] = current + overtime;
+    saveOvertime(overtime);
     
     //Giving original behaviour back
     SaveWeekRows(true);
@@ -56,6 +53,18 @@ function calculateOvertime(workingTime){
     }
 }
 
+function saveOvertime(overtime){
+    key = "overtime";
+    var current = localStorage[key];
+    
+    // Checking for possible problems
+    if(isNaN(current)){
+      current = 0;
+    }
+    
+    localStorage[key] = current + overtime;
+}
+
 /*
 * Saves the total time worked for a given week 
 * The key used is the fortnox code for this week  :
@@ -73,7 +82,6 @@ function saveWorkingTime(workingTime){
 * year + weeknumber + month : 1409-02 for 9th week of 2014 in february
 */
 function saveWeekOvertime(overtime){
-
   var weekOvertimeKey = getWeekOvertimeKey();
   localStorage[weekOvertimeKey] = overtime;
 }
