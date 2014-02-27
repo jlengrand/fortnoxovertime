@@ -1,6 +1,6 @@
 var weeklyHours = 40; // Number of hours to be worked per week
 
-/* 
+/*
 * Checks whether our browser supports LocalStorage
 */
 function supports_html5_storage() {
@@ -12,21 +12,21 @@ function supports_html5_storage() {
 }
 
 /*
-* The method that is run instead of deliver. 
+* The method that is run instead of deliver.
 * Contains all the statistics calculation
 */
 function saveStatistics(){
 
     var workingTime = calculateWorkingTime();
     var overtime = calculateOvertime(workingTime);
-    
+
     console.log("Overtime this week : " + overtime);
 
     // Need to store the information somewhere now. Using localStorage
     saveWorkingTime(workingTime);
     saveWeekOvertime(overtime);
     saveOvertime(overtime);
-    
+
     //Giving original behaviour back
     SaveWeekRows(true);
 }
@@ -44,7 +44,7 @@ function calculateWorkingTime(){
 */
 function calculateOvertime(workingTime){
     var weeklyOvertime = workingTime - weeklyHours;
-    
+
     if(weeklyOvertime > 0){
       return weeklyOvertime;
     }
@@ -56,17 +56,17 @@ function calculateOvertime(workingTime){
 function saveOvertime(overtime){
     key = "overtime";
     var current = localStorage[key];
-    
+
     // Checking for possible problems
     if(isNaN(current)){
       current = 0;
     }
-    
+
     localStorage[key] = current + overtime;
 }
 
 /*
-* Saves the total time worked for a given week 
+* Saves the total time worked for a given week
 * The key used is the fortnox code for this week  :
 * year + weeknumber + month : 1409-02 for 9th week of 2014 in february + over
 */
@@ -102,11 +102,11 @@ function getWeekOvertimeKey(){
 
 
 /*
-Happens no matter what 
+Happens no matter what
 */
 var ok = supports_html5_storage();
 if(ok){
-    console.log("Local Storage allowed!");
+    alert("Local Storage allowed!");
 }
 else{
   alert("Your browser does not support LocalStorage!");
