@@ -1,26 +1,21 @@
-/*
-* Checks whether our browser supports LocalStorage
-*/
-function supports_html5_storage() {
-  try {
-    return 'localStorage' in window && window['localStorage'] !== null;
-  } catch (e) {
-    return false;
-  }
+function saveChromeStorage(key, value){
+  var pair = new Object();
+  pair[key] = value;
+
+  chrome.storage.sync.set(pair, function() {
+    console.log('Setting ' + key  + ' saved with value ' + value);
+  });
 }
 
 //Main action
 // We want to operate only on the right page, and if localStorage can be used
-if (document.title.indexOf("Fortnox") != -1 && supports_html5_storage()) {
+if (document.title.indexOf("Fortnox") != -1) {
     document.getElementById("bt_delivery").onclick= function(event) {
-        alert("It's working!");
-    };
-
-    document.getElementById("button_save_and_group").onclick= function(event) {
         // When clicked on save, we want to trigger the overTime calculation
         saveStatistics();
     };
 
+    //TODO: Remove when finished with development
     document.getElementById("button_save_and_group").onclick= function(event) {
         // When clicked on save, we want to trigger the overTime calculation
         saveStatistics();
@@ -74,15 +69,18 @@ function calculateOvertime(workingTime){
 }
 
 function saveOvertime(overtime){
-    key = "overtime";
-    var current = localStorage[key];
 
-    // Checking for possible problems
-    if(isNaN(current)){
-      current = 0;
-    }
+  key = "overtime";
+  chrome.storage.sync.get(key, function (result) {
+        current = result[key];
+        // Checking for possible problems
+        if(isNaN(current)){
+          current = 0;
+        }
 
-    localStorage[key] = current + overtime;
+        saveChromeStorage(key, current + overtime);
+  });
+
 }
 
 /*
@@ -92,7 +90,9 @@ function saveOvertime(overtime){
 */
 function saveWorkingTime(workingTime){
   var weekKey = getWeekKey();
-  localStorage[weekKey] = workingTime;
+  //localStorage[weekKey] = workingTime;
+  saveChromeStorage(weekKey, workingTime);
+
 }
 
 /*
@@ -102,7 +102,8 @@ function saveWorkingTime(workingTime){
 */
 function saveWeekOvertime(overtime){
   var weekOvertimeKey = getWeekOvertimeKey();
-  localStorage[weekOvertimeKey] = overtime;
+  //localStorage[weekOvertimeKey] = overtime;
+  saveChromeStorage(weekOvertimeKey, overtime);
 }
 
 /*
@@ -116,7 +117,6 @@ function getWeekKey(){
 * creates a hash key for the weekly overtime
 */
 function getWeekOvertimeKey(){
-  return getWeekKey() + "_overtime";
+  return getWeekKey() + '_overtime';
 }
-
 ////////////////////////////////

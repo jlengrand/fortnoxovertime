@@ -1,6 +1,19 @@
 var overtimeGrabber = {
 
     getOvertime: function(){
+    chrome.storage.onChanged.addListener(function(changes, namespace) {
+            for (key in changes) {
+              var storageChange = changes[key];
+              console.log('Storage key "%s" in namespace "%s" changed. ' +
+                          'Old value was "%s", new value is "%s".',
+                          key,
+                          namespace,
+                          storageChange.oldValue,
+                          storageChange.newValue);
+            }
+    });
+
+
         var current = localStorage["overtime"];
 
         // Checking for possible problems
@@ -12,7 +25,7 @@ var overtimeGrabber = {
 
 
     showOvertime: function(){
-        alert(this.getOvertime());
+        //alert(this.getOvertime());
         var title = document.createTextNode("overtime");
         document.body.appendChild(title);
         var value = document.createTextNode(this.getOvertime());
