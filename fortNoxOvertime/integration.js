@@ -1,34 +1,39 @@
 var overtimeGrabber = {
 
     getOvertime: function(){
-    chrome.storage.onChanged.addListener(function(changes, namespace) {
-            for (key in changes) {
-              var storageChange = changes[key];
-              console.log('Storage key "%s" in namespace "%s" changed. ' +
-                          'Old value was "%s", new value is "%s".',
-                          key,
-                          namespace,
-                          storageChange.oldValue,
-                          storageChange.newValue);
-            }
-    });
+    // chrome.storage.onChanged.addListener(function(changes, namespace) {
+    //         for (key in changes) {
+    //           var storageChange = changes[key];
+    //           console.log('Storage key "%s" in namespace "%s" changed. ' +
+    //                       'Old value was "%s", new value is "%s".',
+    //                       key,
+    //                       namespace,
+    //                       storageChange.oldValue,
+    //                       storageChange.newValue);
+    //         }
 
+    // });
 
-        var current = localStorage["overtime"];
+      chrome.storage.sync.get("overtime", function(result) {
+        var overtime = result["overtime"];
 
         // Checking for possible problems
-        if(isNaN(current)){
-          current = -1;
+        if(isNaN(overtime)){
+          overtime = -1;
         }
-        return current;
+
+        var title = document.createTextNode("overtime ");
+        document.body.appendChild(title);
+        var value = document.createTextNode(overtime);
+        document.body.appendChild(value);
+      });
     },
 
 
-    showOvertime: function(){
-        //alert(this.getOvertime());
-        var title = document.createTextNode("overtime");
+    showOvertime: function(overtime){
+        var title = document.createTextNode("overtime ");
         document.body.appendChild(title);
-        var value = document.createTextNode(this.getOvertime());
+        var value = document.createTextNode(overtime);
         document.body.appendChild(value);
     }
 
@@ -37,5 +42,5 @@ var overtimeGrabber = {
 
 // Run our kitten generation script as soon as the document's DOM is ready.
 document.addEventListener('DOMContentLoaded', function () {
-  overtimeGrabber.showOvertime();
+  overtimeGrabber.getOvertime();
 });

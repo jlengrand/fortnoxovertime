@@ -22,7 +22,7 @@ if (document.title.indexOf("Fortnox") != -1) {
     };
 }
 else{
-  alert("Your browser does not support LocalStorage! This extension won't work properly!");
+  alert("Problem with the current webpage!");
 }
 
 ////////////////////////////////
