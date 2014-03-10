@@ -1,3 +1,23 @@
+function saveChromeStorage(key, value){
+  var pair = new Object();
+  pair[key] = value;
+
+  chrome.storage.sync.set(pair, function() {
+    console.log('Setting ' + key  + ' saved with value ' + value);
+  });
+}
+
+function alterChromeStorage(key, value){
+    chrome.storage.sync.get(key, function (result) {
+            current = result[key];
+            // Checking for possible problems
+            if(isNaN(current)){
+              current = 0;
+            }
+            saveChromeStorage(key, current + value);
+      });
+}
+
 function writeOvertime(result){
 
         var overtime = result["overtime"];
@@ -20,35 +40,29 @@ function showOvertime(){
  */
 function alterOvertime(){
     var hours = document.getElementById("alterHours").value;
-    console.log(hours);
+    var hoursInt = parseInt(hours);
+    if(isNaN(hoursInt)){
+        alert("Your input could not be parsed correctly. No change performed");
+        return;
+    }
 
     // trying to get the first digit
     var first_digit = hours.charAt(0);
-    if(first_digit === "+"){
-        alert("adding stuff");
-    }
-    else if(first_digit === "-"){
-        alert("Substracting stuff");
+    if(first_digit === "+" || first_digit === "-"){
+        alterChromeStorage("overtime", hoursInt);
     }
     else{
         // We probably just have a plain number
-        alert("changing stuff");
+        saveChromeStorage("overtime", hoursInt);
     }
 
-    // chrome.storage.sync.get("overtime", function(result, hours){
+    sleep(500, showOvertime);
+}
 
-    //     var overtime = result["overtime"];
-
-    //     var pair = new Object();
-    //     pair["overtime"] = overtime + hours;
-
-    //     chrome.storage.sync.set(pair);
-
-    // });
-
-    //document.getElementById("overtimeValue").innerHTML = "plouf";
-
-    showOvertime();
+function sleep(millis, callback) {
+    setTimeout(function()
+            { callback(); }
+    , millis);
 }
 
 
