@@ -22,6 +22,19 @@ function alterOvertime(){
     var hours = document.getElementById("alterHours").value;
     console.log(hours);
 
+    // trying to get the first digit
+    var first_digit = hours.charAt(0);
+    if(first_digit === "+"){
+        alert("adding stuff");
+    }
+    else if(first_digit === "-"){
+        alert("Substracting stuff");
+    }
+    else{
+        // We probably just have a plain number
+        alert("changing stuff");
+    }
+
     // chrome.storage.sync.get("overtime", function(result, hours){
 
     //     var overtime = result["overtime"];
