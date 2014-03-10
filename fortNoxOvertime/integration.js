@@ -8,17 +8,45 @@ function writeOvertime(result){
         }
 
         var overtimeElement = document.getElementById("overtimeValue");
-        alert(overtimeElement.innerHTML);
         overtimeElement.innerHTML = overtime;
 }
 
 function showOvertime(){
-    alert("showOvertime");
       chrome.storage.sync.get("overtime", writeOvertime);
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+/**
+ * This method is called when the user wants to change its overtime value.
+ */
+function alterOvertime(){
+    var hours = document.getElementById("alterHours").value;
+    console.log(hours);
+
+    // chrome.storage.sync.get("overtime", function(result, hours){
+
+    //     var overtime = result["overtime"];
+
+    //     var pair = new Object();
+    //     pair["overtime"] = overtime + hours;
+
+    //     chrome.storage.sync.set(pair);
+
+    // });
+
+    //document.getElementById("overtimeValue").innerHTML = "plouf";
+
     showOvertime();
+}
+
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    //adding element to the button
+    button = document.getElementById("submitButton");
+    button.onclick = alterOvertime;
+
+    showOvertime();
+
 });
 
 // Will update whenever a change to the storage is made
