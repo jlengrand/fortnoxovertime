@@ -14,3 +14,7 @@ img {
 #overtimeValue {
   display:inline;
 }
+
+#help{
+    float:right;
+}

@@ -65,12 +65,22 @@ function sleep(millis, callback) {
     , millis);
 }
 
+function setDevMode(){
+    var state = document.getElementById("devMode").checked;
+    alert(state);
+    saveChromeStorage("dev", state);
+}
+
 
 document.addEventListener('DOMContentLoaded', function () {
 
-    //adding element to the button
+    //adding event to the button
     button = document.getElementById("submitButton");
     button.onclick = alterOvertime;
+
+    // adding event to the checkbox
+    button = document.getElementById("devMode");
+    button.onclick = setDevMode;
 
     showOvertime();
 
