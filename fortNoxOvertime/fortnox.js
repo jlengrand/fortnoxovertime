@@ -1,3 +1,7 @@
+function isDevMode(){
+  return chrome.storage.sync.get("devMode");
+}
+
 function saveChromeStorage(key, value){
   var pair = new Object();
   pair[key] = value;
@@ -15,14 +19,26 @@ if (document.title.indexOf("Fortnox") != -1) {
         saveStatistics();
     };
 
-    //TODO: Remove when finished with development
-    document.getElementById("button_save_and_group").onclick= function(event) {
-        // When clicked on save, we want to trigger the overTime calculation
-        saveStatistics();
-    };
+    //In dev mode, actions should be triggered y pressing on save as well
+    chrome.storage.sync.get("devMode", function(result){
+            var devMode = result["devMode"];
+
+            // Checking for possible problems
+            if(devMode){
+              console.log("currently in dev mode");
+
+              document.getElementById("button_save_and_group").onclick= function(event) {
+                  // When clicked on save, we want to trigger the overTime calculation
+                  saveStatistics();
+              };
+            }
+            else{
+              console.log("currently not in dev mode");
+            }
+    });
 }
 else{
-  alert("Problem with the current webpage!");
+  alert("Problem processing the current webpage!");
 }
 
 ////////////////////////////////

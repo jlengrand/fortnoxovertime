@@ -67,10 +67,15 @@ function sleep(millis, callback) {
 
 function setDevMode(){
     var state = document.getElementById("devMode").checked;
-    alert(state);
-    saveChromeStorage("dev", state);
+    saveChromeStorage("devMode", state);
 }
 
+function setCheckBoxState(){
+    chrome.storage.sync.get("devMode", function(result){
+        state = result["devMode"];
+        document.getElementById("devMode").checked = state;
+    });
+}
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -79,8 +84,11 @@ document.addEventListener('DOMContentLoaded', function () {
     button.onclick = alterOvertime;
 
     // adding event to the checkbox
-    button = document.getElementById("devMode");
-    button.onclick = setDevMode;
+    box = document.getElementById("devMode");
+    box.onclick = setDevMode;
+
+    // checking the checkbox if needed
+    setCheckBoxState();
 
     showOvertime();
 
