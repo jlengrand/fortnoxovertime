@@ -14,28 +14,34 @@ function saveChromeStorage(key, value){
 //Main action
 // We want to operate only on the right page, and if localStorage can be used
 if (document.title.indexOf("Fortnox") != -1) {
-    document.getElementById("bt_delivery").onclick= function(event) {
-        // When clicked on save, we want to trigger the overTime calculation
-        saveStatistics();
-    };
 
-    //In dev mode, actions should be triggered y pressing on save as well
-    chrome.storage.sync.get("devMode", function(result){
-            var devMode = result["devMode"];
+    // nothing done if we have already delivered
+    var disabled = document.getElementById('bt_delivery_disabled');
+    if (disabled == null){
 
-            // Checking for possible problems
-            if(devMode){
-              console.log("currently in dev mode");
+      document.getElementById("bt_delivery").onclick= function(event) {
+          // When clicked on save, we want to trigger the overTime calculation
+          saveStatistics();
+      };
 
-              document.getElementById("button_save_and_group").onclick= function(event) {
-                  // When clicked on save, we want to trigger the overTime calculation
-                  saveStatistics();
-              };
-            }
-            else{
-              console.log("currently not in dev mode");
-            }
-    });
+      //In dev mode, actions should be triggered y pressing on save as well
+      chrome.storage.sync.get("devMode", function(result){
+              var devMode = result["devMode"];
+
+              // Checking for possible problems
+              if(devMode){
+                console.log("currently in dev mode");
+
+                document.getElementById("button_save_and_group").onclick= function(event) {
+                    // When clicked on save, we want to trigger the overTime calculation
+                    saveStatistics();
+                };
+              }
+              else{
+                console.log("currently not in dev mode");
+              }
+      });
+    }
 }
 else{
   alert("Problem processing the current webpage!");
@@ -47,6 +53,8 @@ else{
  */
 
 var weeklyHours = 40; // Number of hours to be worked per week
+var daysPerWeek = 5; // We work 5 days per week
+var grayValue = "136"; //the gray value used in the calendar
 
 /*
 * The method that is run instead of deliver.
@@ -54,12 +62,32 @@ var weeklyHours = 40; // Number of hours to be worked per week
 */
 function saveStatistics(){
     var workingTime = calculateWorkingTime();
-    var overtime = calculateOvertime(workingTime);
+    var numberOfDays = getNumberOfDaysWorked();
+    var overtime = calculateOvertime(workingTime, numberOfDays);
 
     // Need to store the information somewhere now. Using localStorage
     saveWorkingTime(workingTime);
     saveWeekOvertime(overtime);
     saveOvertime(overtime);
+}
+
+/*
+* Calculates the number of days have been worked
+* For this, we used the calendar widget located on the right, checking the colors of the days
+*/
+function getNumberOfDaysWorked(){
+  var workedDays = daysPerWeek;
+
+  var week = document.getElementsByClassName("calendarweeknumberselected")[0].parentElement;
+  var days = week.getElementsByClassName("calendartransparentborder");
+  for (i=0; i< daysPerWeek; i++){
+    var col = days[i].children[0].style;
+    if (col.color.indexOf(grayValue) > -1){
+      workedDays -= 1;
+    }
+  }
+
+  return workedDays;
 }
 
 /*
@@ -73,15 +101,21 @@ function calculateWorkingTime(){
 /*
 * Calculates the number of extra hours I worked this week
 */
-function calculateOvertime(workingTime){
-    var weeklyOvertime = workingTime - weeklyHours;
+function calculateOvertime(workingTime, numberOfDays){
+    var timePerDay = weeklyHours / daysPerWeek;
+    var hoursExpected = timePerDay * numberOfDays;
 
-    if(weeklyOvertime > 0){
-      return weeklyOvertime;
-    }
-    else{
-      return 0;
-    }
+    var weeklyOvertime = workingTime - hoursExpected;
+
+
+    return weeklyOvertime;
+    // We should also count negative time. . .
+    // if(weeklyOvertime > 0){
+    //   return weeklyOvertime;
+    // }
+    // else{
+    //   return 0;
+    // }
 }
 
 function saveOvertime(overtime){
