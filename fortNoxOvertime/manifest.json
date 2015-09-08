@@ -6,7 +6,7 @@
   "version": "1.0",
   "content_scripts": [
       {
-        "matches": ["https://apps2.fortnox.se/time/time_time/*"],
+        "matches": ["https://*.fortnox.se/time/time_time/*"],
         "js": ["fortnox.js"]
       }
     ],

@@ -24,7 +24,7 @@ function writeOvertime(result){
 
         // Checking for possible problems
         if(isNaN(overtime)){
-          overtime = "Could not retrieve";
+          overtime = "Could not retrieve value.";
         }
 
         var overtimeElement = document.getElementById("overtimeValue");
@@ -56,7 +56,7 @@ function alterOvertime(){
         saveChromeStorage("overtime", hoursInt);
     }
 
-    sleep(500, showOvertime);
+    sleep(200, showOvertime);
 }
 
 function sleep(millis, callback) {
